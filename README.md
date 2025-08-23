@@ -1,5 +1,5 @@
 # memory-experiment
-PsychoPy based free recall and suffix memory experiment. 
+PsychoPy based free recall and suffix memory experiment. As of now this project is kind of demo. But I will finish this in a week or so. 
 ***************
 The project was designed to study a phenomenon called Suffix Effect, with Free Recall. 
  

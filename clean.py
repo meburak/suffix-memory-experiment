@@ -76,24 +76,24 @@ def rowDivider(x, col:str): #x = data col=seperator column "Words"
     listNumber = 0
 
     for i in range(len(x[col])-1):
-
-        p = x[col][i]
-        pDiff = x[col][i+1]
-        
-        if p == 0 and pDiff != p: 
-            #print("Start Point added")
-            tempList.append(i)
-
-        if p != 0 and pDiff == 0: 
-            #print("End Point Added")
-            tempList.append(i)
-            div.update({f"List-00{listNumber}": tempList})
-            #print("Dictionary Updated!")
-            tempList = []
-            listNumber += 1
+        if listNumber <= numLists: #there is a problem with experiments output, where it gives an extra list output. 
+            p = x[col][i] #this will ensure that does not happen 
+            pDiff = x[col][i+1]
             
-        else:
-            continue
+            if p == 0 and pDiff != p: 
+                #print("Start Point added")
+                tempList.append(i)
+    
+            if p != 0 and pDiff == 0: 
+                #print("End Point Added")
+                tempList.append(i)
+                div.update({f"List-00{listNumber}": tempList})
+                #print("Dictionary Updated!")
+                tempList = []
+                listNumber += 1
+                
+            else:
+                continue
 
     return div
 
@@ -364,4 +364,5 @@ for file in folderRawCSV: #start the loop, it starts if a data is not already cl
 
     if fileCleaned in os.listdir(folderDataClean):
         print(f"{BLUE}File with name: {fileCleaned}, already exists in cleanData as {file}_clean.csv{RESET}")
+
         continue

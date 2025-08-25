@@ -5,12 +5,20 @@ import unicodedata
 import numpy as np
 from openpyxl.utils import column_index_from_string as cifs
 
-numTolerate = 1 #Tolerated character mistakes. Change here if needed. 
+import configparser 
+config = configparser.ConfigParser()
 
-numLists = 4 #Lists to be analyzed, do not include trial. 
-trialYes = 1 #if it includes a trial 1, if not 0. 
+import configparser 
+config = configparser.ConfigParser()
+config.read("config.ini")
+
+numTolerate = config["DEFAULT"]["numTolerate"] #Tolerated character mistakes. Change here if needed. 
+numLists = config["DEFAULT"]["numLists"]
+columnsExtract = config["DEFAULT"]["columnsExtract"]
+trialyes = config["DEFAULT"]["trialyes"]
+
 columnWords = "G" #displayed words column for extracting indexes. 
-columnsExtract = ["A","G","H","J","L","N","P","R","T","V","X","Z"]
+
 columnsNumbers = []
 
 RED = '\033[91m'
@@ -366,3 +374,4 @@ for file in folderRawCSV: #start the loop, it starts if a data is not already cl
         print(f"{BLUE}File with name: {fileCleaned}, already exists in cleanData as {file}_clean.csv{RESET}")
 
         continue
+

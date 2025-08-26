@@ -1931,9 +1931,9 @@
     <Routine name="clock_start_list_4"/>
     <Routine name="suffix_play_2"/>
     <LoopInitiator loopType="TrialHandler" name="recall_list_4">
-      <Param name="Selected rows" updates="None" val="61:78" valType="str"/>
+      <Param name="Selected rows" updates="None" val="" valType="str"/>
       <Param name="conditions" updates="None" val="[{'Words': 'MASA'}, {'Words': 'CAM'}, {'Words': 'SU'}, {'Words': 'İYİLİK'}, {'Words': 'TÜTÜN'}, {'Words': 'KELİME'}, {'Words': 'MASA'}, {'Words': 'KALE'}, {'Words': 'KÖPEK'}, {'Words': 'KAĞIT'}, {'Words': 'BİNA'}, {'Words': 'PARK'}, {'Words': 'KOLAY'}, {'Words': 'BEYİN'}, {'Words': 'ÖLÇEK'}, {'Words': 'AĞAÇ'}, {'Words': 'EKRAN'}, {'Words': 'YAZI'}, {'Words': 'RAKAM'}, {'Words': 'KALEM'}, {'Words': 'ŞİŞE'}, {'Words': 'BARDAK'}, {'Words': 'SARI'}, {'Words': 'ÇANTA'}, {'Words': 'MESAJ'}, {'Words': 'TOPLU'}, {'Words': 'KISA'}, {'Words': 'BÜYÜK'}, {'Words': 'KAPI'}, {'Words': 'GRUP'}, {'Words': 'DEFTER'}, {'Words': 'SPOR'}, {'Words': 'İLAÇ'}, {'Words': 'KEDİ'}, {'Words': 'TERLİK'}, {'Words': 'ELMA'}, {'Words': 'TABAK'}, {'Words': 'CÜZDAN'}, {'Words': 'SEHPA'}, {'Words': 'KOLTUK'}, {'Words': 'KAŞIK'}, {'Words': 'ŞİŞE'}, {'Words': 'KAPI'}, {'Words': 'FIRIN'}, {'Words': 'KÜÇÜK'}, {'Words': 'TOPRAK'}, {'Words': 'HALI'}, {'Words': 'DOLAP'}, {'Words': 'ÇİÇEK'}, {'Words': 'KİTAP'}, {'Words': 'ODA'}, {'Words': 'CAM'}, {'Words': 'LAMBA'}, {'Words': 'DÜĞME'}, {'Words': 'PARKUR'}, {'Words': 'DUVAR'}, {'Words': 'KOKU'}, {'Words': 'YATAK'}, {'Words': 'SALÇA'}, {'Words': 'KALAS'}, {'Words': 'SAAT'}, {'Words': 'MEKTUP'}, {'Words': 'KALIP'}, {'Words': 'ZEMİN'}, {'Words': 'HARİTA'}, {'Words': 'PARA'}, {'Words': 'KUTU'}, {'Words': 'ÇORAP'}, {'Words': 'TERAS'}, {'Words': 'DERGİ'}, {'Words': 'TAHTA'}, {'Words': 'FIRIN'}, {'Words': 'SİLGİ'}, {'Words': 'MARKET'}, {'Words': 'KASA'}, {'Words': 'BAHÇE'}, {'Words': 'SIRA'}, {'Words': 'HALKA'}]" valType="str"/>
-      <Param name="conditionsFile" updates="None" val="word_list_main.xlsx" valType="file"/>
+      <Param name="conditionsFile" updates="None" val="" valType="file"/>
       <Param name="endPoints" updates="None" val="[0, 1]" valType="num"/>
       <Param name="isTrials" updates="None" val="True" valType="bool"/>
       <Param name="loopType" updates="None" val="random" valType="str"/>

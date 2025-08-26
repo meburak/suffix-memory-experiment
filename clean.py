@@ -4,20 +4,7 @@ import Levenshtein as lv
 import unicodedata
 import numpy as np
 from openpyxl.utils import column_index_from_string as cifs
-
 import configparser 
-config = configparser.ConfigParser()
-
-import configparser 
-config = configparser.ConfigParser()
-config.read("config.ini")
-
-numTolerate = config["DEFAULT"]["numTolerate"] #Tolerated character mistakes. Change here if needed. 
-numLists = config["DEFAULT"]["numLists"]
-columnsExtract = config["DEFAULT"]["columnsExtract"]
-trialyes = config["DEFAULT"]["trialyes"]
-
-columnWords = "G" #displayed words column for extracting indexes. 
 
 columnsNumbers = []
 
@@ -280,6 +267,15 @@ def calcPresentPos(dct):
 folderBase = os.getcwd() #/../psychopy-recall-suffix
 folderDataRaw = os.path.join(folderBase, "data")
 folderRawCSV = listCSV(os.listdir(folderDataRaw))
+
+pathConfig = os.path.join(folderBase,"config.ini")
+config = configparser.ConfigParser()  # Fixed case
+config.read(pathConfig)
+
+numTolerate = int(config["DEFAULT"]["numTolerate"])
+numLists = int(config["DEFAULT"]["numLists"])  # Need to match key name
+columnsExtract = config["DEFAULT"]["columnsExtract"].split(',')
+trialyes = int(config["DEFAULT"]["trialyes"])
 
 if "cleanData" not in os.listdir(folderBase): #create the cleanData folder
     os.mkdir("cleanData")

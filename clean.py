@@ -279,35 +279,29 @@ for file in folderRawCSV: #start the loop, it starts if a data is not already cl
             valW = px["presentedWords"][i]
             for r in range(lengthR):
                 valR = middleframe["recalledWords"][r]
-                if valR == valW: 
+                if normalize(valR) == normalize(valW): 
                     #px["recalledWords"][i] = middleframe["recalledWords"][r]
                     #px["recallPos"][i] = middleframe["recallPos"][r]
                     #px["reactionTime"][i] = middleframe["reactionTime"][r]
-
+        
                     px.loc[i,"recalledWords"] = middleframe["recalledWords"][r]
                     px.loc[i,"recallPos"] = middleframe["recallPos"][r]
                     px.loc[i,"reactionTime"] = middleframe["reactionTime"][r]
-
-
+        
+        
                 else:
                     continue
 
-        px
-
         #save the files
-
         
         output_path = os.path.join(folderDataClean,fileCleaned)
         px.to_csv(output_path, index=False, encoding="utf-8-sig")
         print(f"{GREEN}File created! {file}{RESET}")
 
 
-
-
-
-
     if fileCleaned in os.listdir(folderDataClean):
         print(f"{BLUE}File with name: {fileCleaned}, already exists in cleanData as {file}_clean.csv{RESET}")
 
         continue
+
 

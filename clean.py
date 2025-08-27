@@ -48,7 +48,7 @@ def convertLetterstoNumbers(lst): #For converting the letter inputs into values 
     for str in lst: 
         idX = cifs(str)-1
         columnsNumbers.append(idX)
-    print(f"Columns converted to index numbers. \n   Created columnsNumbers variable. \n Numbers:: {columnsNumbers}")
+    print(f"Columns converted to index numbers. \n Numbers:: {columnsNumbers}")
 
 def dropColumns(x): #for removing the columns we did not want
     tempRemove=[]
@@ -127,19 +127,7 @@ def findInputLists(df):
             rt += 1
         else: 
             continue
-    
-    # Tried to fix NoneType error like this. 
-    # However, it only occurs when the file is corrupted. 
-    # So I am going to upload the code with if none then pass type thingy. 
-    # if type(rtDictionary) is None:  
-    #     for val in naArray: 
-    #         rtDictionary.update({f"List-00{rt}": val})
-    #         rt += 1
-    # if recallDictionary is None: 
-    #     for val in naArray: 
-    #         recallDictionary.update({f"List-00{rec}": val})
-    #         rec += 1
-    
+      
 
     if recallDictionary is None:
         print(f"{RED}BROKEN FILE! Missing recallDictionary.{RESET}")
@@ -151,56 +139,7 @@ def findInputLists(df):
     
     else:
         return recallDictionary, rtDictionary
-
-def calcSerialPosOld(dct):   #Here is a mind-bending (in a bad way) work of stupidity
-    #why? just why. 
-    #actually wait, i can make this dual purpose with including reaction times too.
-    #extract the position of each words presentation
-    div = {}
-    for key in dct.keys():
-
-        ###Find the Indexes
-        tempList = dct.get(key)
-        
-        tempList = pd.DataFrame(tempList) #so I can use rowIndexer
-        #Imported rowIndexer part
-
-        tempList = tempList.fillna(0)
-
-        col = tempList.columns[0]
-
-        idXList = []
-
-
-        for i in range(len(tempList[col])-1):
-
-            p = tempList[col][i]
-            pDiff = tempList[col][i+1]
-            
-            if p == 0 and pDiff != p: 
-                #print("Start Point added")
-                idXList.append(i+1)
-
-            if p != 0 and pDiff == 0: 
-                #print("End Point Added")
-                idXList.append(i)
-                #print("Dictionary Updated!")
-                
-            else:
-                continue        #Okay, found the indexes. 
-
-            #We have now: idXList = [start, end] we can convert to this
-            #dictionary = {"A1":1} 
-            for i in range(idXList[0],idXList[1]+1):
-                pos = i - (idXList[0] - 1)
-                newkey = tempList[col][i] #had to do that because it was giving outputs with \n, I couldnt figure out why. So easy solution
-                #well didnt need that, instead [-1] solved it. But why? I dont get it. 
-                
-                div.update({f"{tempList[col][i][:-1]}": pos})
-
-    return div
-            
-
+    
 def calcSerialPos(rc, rt,file):
     #extract the position of each words presentation
     if rc == 0 or rt == 0: 
@@ -268,13 +207,14 @@ folderBase = os.getcwd() #/../psychopy-recall-suffix
 folderDataRaw = os.path.join(folderBase, "data")
 folderRawCSV = listCSV(os.listdir(folderDataRaw))
 
+#have config
 pathConfig = os.path.join(folderBase,"config.ini")
-config = configparser.ConfigParser()  # Fixed case
+config = configparser.ConfigParser()
 config.read(pathConfig)
 
 numTolerate = int(config["DEFAULT"]["numTolerate"])
 numLists = int(config["DEFAULT"]["numLists"])  # Need to match key name
-columnsExtract = config["DEFAULT"]["columnsExtract"].split(',')
+columnsExtract = config["DEFAULT"].get("columnsExtract").replace(" ", "").split(",")
 trialyes = int(config["DEFAULT"]["trialyes"])
 
 if "cleanData" not in os.listdir(folderBase): #create the cleanData folder
@@ -285,7 +225,7 @@ folderDataClean = os.path.join(folderBase, "cleanData")
 ###Iterate files
 for file in folderRawCSV: #start the loop, it starts if a data is not already cleaned
 
-    fileCleaned = file + "_clean.csv"
+    fileCleaned = file.strip(".csv") + "_clean.csv"
     filePath = os.path.join(folderDataRaw, file)
 
     if fileCleaned not in os.listdir(folderDataClean):

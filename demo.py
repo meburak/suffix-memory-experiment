@@ -5,8 +5,20 @@ import unicodedata
 import numpy as np
 from openpyxl.utils import column_index_from_string as cifs
 import configparser 
+import logging
+import time
 
 columnsNumbers = []
+logger = logging.getLogger(__name__)
+logging.basicConfig(
+    filename=f"{time.strftime("%d_%H_%M", time.localtime())}_demo.log",
+    encoding="utf-8",
+    filemode="a",
+    format="{asctime} - {levelname} - {message}",
+    style="{",
+    datefmt="%Y-%m-%d %H:%M",
+    level = 10
+)
 
 RED = '\033[91m'
 GREEN = '\033[92m'
@@ -49,7 +61,7 @@ def convertLetterstoNumbers(lst): #For converting the letter inputs into values 
     for str in lst: 
         idX = cifs(str)-1
         columnsNumbers.append(idX)
-    print(f"Columns converted to index numbers. \n Numbers:: {columnsNumbers}")
+    logger.info(f"Columns converted to index numbers. \n Numbers:: {columnsNumbers}")
 
 def dropColumns(x): #for removing the columns we did not want
     tempRemove=[]
@@ -60,7 +72,7 @@ def dropColumns(x): #for removing the columns we did not want
             continue
     for i in tempRemove:
         x = x.drop(columns=[f"{i}"])
-    print("Columns Dropped!")
+    logger.info("Columns Dropped!")
     return x
 
 def columnStrip(df,col,char):
@@ -69,11 +81,19 @@ def columnStrip(df,col,char):
         df.loc[i, col] =  df.loc[i, col].strip(char)
     return df
 
+def noneFound():
+    pass
+
 def findColumnTypes(df, searchedType):
     temp = [] #returns names of columns with desired ending
     for column in df.columns:
         if column.endswith(searchedType): 
             temp.append(column)
+    
+    if len(temp) <4: #rt are not  
+        logger.error(f"{temp}, unsatisfactory column count.")
+        return temp
+    logger.info(f"Columns found for: {searchedType}, \n and are {temp}")
     return temp
 
 def isOneCellMP(cell): #checks if a single cell is one cell multiple response type
@@ -95,11 +115,13 @@ def arrayCombine(array): #combines the inputs in the array
             for word in dct: 
                 combined.append(word)
                 rows.append(i)
+        logger.info("Cell Sepeerated")
 
         if isOneCellMP(cell) == False and type(cell) == str: 
             combined.append(cell)
             rows.append(i)
-        
+    logger.info(f"Column seperated and combined: {combined, rows} ")
+
     return combined, rows
 # def indexOneCellMultipleResponse(array):
 #     tmp = array
@@ -137,14 +159,23 @@ def fillRecallRtimeTable(df,table,RecallEnd,ReactionEnd):
             temp.loc[pushtoRow, "Recalled Word"] = recallWords[i]
             temp.loc[pushtoRow, "Recall Position"] = i+1
             temp.loc[pushtoRow, "Reaction Time"] = rows[i]
+            logger.info(f"To {pushtoRow}:: {ncol,recallWords[i],i+1,rows[i]} pushed.")
             pushtoRow += 1
+            
 
     
-    reactionColumnNames = findColumnTypes(df, ReactionEnd) #take the columns with endind
+    reactionColumnNames = findColumnTypes(df, ReactionEnd) #take the columns with endind 
+    #gives an error when none found, we must take it in mind and create some instance for it.
+
     for i in range(len(temp["Recalled Word"])):
         gettable = temp["ListID"][i] #for the given row, take the table id 
         getindex = temp["Reaction Time"][i] #for the given row, take the row number from reaction time column. where the previous function wrote. 
-        reactionCol = df[reactionColumnNames[gettable]] #take the relevant reaction time column
+        ##ERROR 
+        #HANDLE FOR NO REACTION COLUMNS
+        if len(reactionColumnNames) <5:
+            reactionCol = [0 for _ in range(500)] #create this so we cann fill and dont have error. 
+        else:
+            reactionCol = df[reactionColumnNames[gettable]] #take the relevant reaction time column
         temp.loc[i,"Reaction Time"] = reactionCol[getindex] #take the value 
 
     temp = columnStrip(temp, "Recalled Word", "\n")
@@ -216,7 +247,7 @@ def mergeTables(wordPresent, recall):
     recallCol = recall["Recalled Word"]
 
     for i in range(len(wordsCol)): 
-        presented = normalize(wordsCol[i])
+        presented = normalize(str(wordsCol[i]))
         presentedListRelation = wordPresent["ListID"][i]
 
         newTable.loc[currentRow, "ListID"] = wordPresent["ListID"][i]
@@ -226,7 +257,7 @@ def mergeTables(wordPresent, recall):
         found = False
 
         for x in range(len(recallCol)): 
-            recalled = normalize(recallCol[x])
+            recalled = normalize(str(recallCol[x]))
             recallListRelation = recall["ListID"][x]
 
             if recalled == presented and recallListRelation == presentedListRelation and found == False:
@@ -234,7 +265,7 @@ def mergeTables(wordPresent, recall):
                 newTable.loc[currentRow, "Recall Position"] = recall["Recall Position"][x]
                 newTable.loc[currentRow, "Reaction Time"] = recall["Reaction Time"][x]
                 newTable.loc[currentRow, "Hit"] = 1 # true hit
-                remainderRecall = remainderRecall.drop(index = x) #to take in remaining values
+                remainderRecall.loc[x, :] = np.nan #to take in remaining values
                 currentRow += 1 
                 found = True
                 
@@ -276,32 +307,37 @@ folderDataClean = os.path.join(folderBase, "cleanData")
 
 for file in folderRawCSV: #start the loop, it starts if a data is not already cleaned
 
-    fileCleaned = file.strip(".csv") + "_clean.csv"
-    fileRemainder = file.strip(".csv") + "_intrusions.csv"
+    fileCleaned = file.replace(".csv","") + "_clean.csv"
+    fileRemainder = file.replace(".csv","") + "_intrusions.csv"
     filePath = os.path.join(folderDataRaw, file)
 
     if fileCleaned not in os.listdir(folderDataClean):
         #left here, continue from
-        dataInput = pd.read_csv(filePath) #take file
+        try:
+            dataInput = pd.read_csv(filePath) #take file
 
-        convertLetterstoNumbers(columnsExtract) #Now we can turn it to numbers. 
-        #the number array is returned to a global list created at the start. 
-        #that number array is fed into dropColumns
-        dataInput = dropColumns(dataInput)
+            convertLetterstoNumbers(columnsExtract) #Now we can turn it to numbers. 
+            #the number array is returned to a global list created at the start. 
+            #that number array is fed into dropColumns
+            dataInput = dropColumns(dataInput)
 
-        recallTable = fillRecallRtimeTable(dataInput, createRecallRtimeTable(),".text",".rt")
-        wordsTable = fillWordPresentTable(dataInput, "Words", 4, createWordPresentTable())
+            recallTable = fillRecallRtimeTable(dataInput, createRecallRtimeTable(),".text",".rt")
+            wordsTable = fillWordPresentTable(dataInput, "Words", 4, createWordPresentTable())
 
-        table, remainder = mergeTables(wordsTable,recallTable)
+            table, remainder = mergeTables(wordsTable,recallTable)
 
-        #save the files
-        
-        output_path = os.path.join(folderDataClean,fileCleaned)
+            #save the files
+            
+            output_path = os.path.join(folderDataClean,fileCleaned)
 
-        table.to_csv(output_path, index=False, encoding="utf-8-sig")
-        remainder.to_csv(os.path.join(folderDataClean,fileRemainder))
+            table.to_csv(output_path, index=False, encoding="utf-8-sig")
+            remainder.to_csv(os.path.join(folderDataClean,fileRemainder))
 
-        print(f"{GREEN}File created!{fileCleaned, fileRemainder}{RESET}")
+            print(f"{GREEN}File created!{fileCleaned, fileRemainder}{RESET}")
+        except Exception as e: 
+            print(f"{RED}Faulty file: {file}, passed.{RESET}")
+            logger.error(f"RAISED EXCEPTION. {e} for file: {file}")
+            continue
 
 
     if fileCleaned in os.listdir(folderDataClean):

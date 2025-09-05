@@ -262,7 +262,7 @@ def mergeTables(wordPresent, recall):
             recalled = normalize(str(recallCol[x]))
             recallListRelation = recall["ListID"][x]
 
-            if recalled == presented and recallListRelation == presentedListRelation and found == False:
+            if levenshtein(recalled,presented) and recallListRelation == presentedListRelation and found == False:
                 newTable.loc[currentRow, "Recalled Word"] = recall["Recalled Word"][x]
                 newTable.loc[currentRow, "Recall Position"] = recall["Recall Position"][x]
                 newTable.loc[currentRow, "Reaction Time"] = recall["Reaction Time"][x]
@@ -277,7 +277,7 @@ def mergeTables(wordPresent, recall):
                 found = True
                 
 
-            if recalled == presented and recallListRelation != presentedListRelation and found == False:
+            if levenshtein(recalled,presented) and recallListRelation != presentedListRelation and found == False:
                 newTable.loc[currentRow, "Recalled Word"] = recall["Recalled Word"][x]
                 newTable.loc[currentRow, "Recall Position"] = recall["Recall Position"][x]
                 newTable.loc[currentRow, "Reaction Time"] = recall["Reaction Time"][x]
@@ -351,4 +351,5 @@ for file in folderRawCSV: #start the loop, it starts if a data is not already cl
         print(f"{BLUE}File with name: {fileCleaned}, already exists in cleanData as {file}_clean.csv{RESET}")
 
         continue
+
 

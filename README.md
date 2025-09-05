@@ -6,9 +6,9 @@ PsychoPy based memory experiment, with which you can:
 - Change list lengths, 
 - Get the file output with recall and presentation positions, 
 - Get the intrusions. 
-Project is working but still needs some work and touch-ups. 
+Project is working but still needs some work and touch-ups. Please keep in mind that I do not advise this to be used for academic researches without rigorous testing. 
 There is a seperate python script provided to clean and edit the data. 
-Built with PsychoPy v2025.1.1
+Built with PsychoPy v2025.1.1 
 ***
 #### How to use the experiment file
 You will need PsychoPy v2025.1.1 to run and edit the experiment. It is recomended to run the experiment once before doing changes.
